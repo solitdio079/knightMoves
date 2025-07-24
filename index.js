@@ -59,4 +59,4 @@ function moves(pos) {
 }
 
 //console.log(moves([1,0]))
-console.log(knightMoves([3, 3], [4,3]));
+console.log(`You made it in ${knightMoves([0, 0], [7,7]).length-1} moves! Here is your path:`,knightMoves([0, 0], [7,7]));
