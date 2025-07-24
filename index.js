@@ -1,8 +1,8 @@
 function knightMoves(start, end) {
   const q = [start];
-  let level = 0
-  let path = [];
-  let currentParent = start;
+  //let level = 0
+  let path = [start];
+  //let currentParent = start;
 
   const visited = [];
   let i = 0;
@@ -13,17 +13,23 @@ function knightMoves(start, end) {
       (el) => JSON.stringify(el) === JSON.stringify(end)
     );
     if (match) {
+      const edgeParent = visited.find(el => JSON.stringify(moves(el)).includes(JSON.stringify(q[0]))) || start
+      if(edgeParent !== path[path.length-1]) path.push(edgeParent)
       path.push(q[0], end);
       break;
     } else {
       const edgeParent = visited.find(el => JSON.stringify(moves(el)).includes(JSON.stringify(q[0]))) || start
-      if(!JSON.stringify(path).includes(JSON.stringify(edgeParent))) path.push(edgeParent)
+    
+      if(!JSON.stringify(path).includes(JSON.stringify(edgeParent)) && JSON.stringify(moves(path[path.length-1])).includes(JSON.stringify(edgeParent)) && edgeParent !==path[path.length-1]){
+    
+        path.push(edgeParent)
+      }
       q.push(...edges)
       q.shift()
     }
   }
- 
-  return path;
+  return path
+  //return Array.from(new Set(path));
 }
 function moves(pos) {
   if (!Array.isArray(pos) || pos.length !== 2) {
@@ -53,4 +59,4 @@ function moves(pos) {
 }
 
 //console.log(moves([1,0]))
-console.log(knightMoves([0, 0], [7, 7]));
+console.log(knightMoves([3, 3], [4,3]));
