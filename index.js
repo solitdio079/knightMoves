@@ -1,58 +1,56 @@
-function knightMoves(pos1,pos2){
-    let q = moves(pos1)
-    const path1=[pos1]
-   
-    while(q.length>=1){
-        const moves1= moves(q[0])
-       // console.log("moves : ",moves1)
-        const match = moves1.find(el => {
-            return el.every(item => pos2.includes(item)) && pos2.every(item => el.includes(item))
-        })
-        if(match){
-            path1.push(q[0])
-            break
-        }
-      
-        path1.push(q.shift())
-        q=Array.from(moves1)
-        
+function knightMoves(start, end) {
+  const q = [start];
+  let level = 0
+  let path = [];
+  let currentParent = start;
 
-
+  const visited = [];
+  let i = 0;
+  while (q.length > 0) {
+    const edges = moves(q[0]);
+    visited.push(q[0]);
+    const match = edges.find(
+      (el) => JSON.stringify(el) === JSON.stringify(end)
+    );
+    if (match) {
+      path.push(q[0], end);
+      break;
+    } else {
+      const edgeParent = visited.find(el => JSON.stringify(moves(el)).includes(JSON.stringify(q[0]))) || start
+      if(!JSON.stringify(path).includes(JSON.stringify(edgeParent))) path.push(edgeParent)
+      q.push(...edges)
+      q.shift()
     }
-    path1.push(pos2)
-    return path1
-
-
+  }
+ 
+  return path;
 }
-function moves(pos){
-    if(!Array.isArray(pos) || pos.length !==2){
-        throw new Error("Please provide an array with length 2")
+function moves(pos) {
+  if (!Array.isArray(pos) || pos.length !== 2) {
+    throw new Error(`Please provide an array with length 2 not ${pos}`);
+  }
+  const possibilities = [];
+  const limits = [0, 1, 2, 3, 4, 5, 6, 7];
+  const ones = [1, -1];
+  const twos = [2, -2];
+  ones.forEach((el) => {
+    if (limits.includes(pos[0] + el) && limits.includes(pos[1] + twos[0])) {
+      possibilities.push([pos[0] + el, pos[1] + twos[0]]);
     }
-    const possibilities = []
-    const limits = [0,1,2,3,4,5,6,7]
-    const ones = [1,-1]
-    const twos = [2,-2]
-    ones.forEach(el => {
-        if(limits.includes(pos[0]+el) && limits.includes(pos[1]+twos[0])){
-            possibilities.push([pos[0]+el, pos[1]+twos[0]])
-          
-        }
-        if(limits.includes(pos[0]+el) && limits.includes(pos[1]+twos[1])){
-            possibilities.push([pos[0]+el, pos[1]+twos[1]])
-        }
-       
-    })
-    twos.forEach(el => {
-        if(limits.includes(pos[0]+el) && limits.includes(pos[1]+ones[0])){
-        possibilities.push([pos[0]+el, pos[1]+ones[0]])
-       
-     }
-      if(limits.includes(pos[0]+el) && limits.includes(pos[1]+ones[1])){
-        possibilities.push([pos[0]+el, pos[1]+ones[1]])
-     }
-    })
-    return possibilities
+    if (limits.includes(pos[0] + el) && limits.includes(pos[1] + twos[1])) {
+      possibilities.push([pos[0] + el, pos[1] + twos[1]]);
+    }
+  });
+  twos.forEach((el) => {
+    if (limits.includes(pos[0] + el) && limits.includes(pos[1] + ones[0])) {
+      possibilities.push([pos[0] + el, pos[1] + ones[0]]);
+    }
+    if (limits.includes(pos[0] + el) && limits.includes(pos[1] + ones[1])) {
+      possibilities.push([pos[0] + el, pos[1] + ones[1]]);
+    }
+  });
+  return possibilities;
 }
 
 //console.log(moves([1,0]))
-console.log(knightMoves([0,0],[7,7]))
+console.log(knightMoves([0, 0], [7, 7]));
